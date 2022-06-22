@@ -53,7 +53,6 @@ async function insertNotion(data, history) {
         auth: process.env.REACT_APP_NOTION_TOKEN
     });
 
-    let flag;
     const jiraDto = getJiraHistoryDto(history);
     const { id } = await getDataBaseId('JIRA');
     const dataList = await getDataList(id);
@@ -80,7 +79,7 @@ async function insertNotion(data, history) {
                     properties: jira.getNotionProperties()
                 });
             } else {
-                response = notion.pageCreate({
+                response = await notion.pageCreate({
                     parent: {
                         database_id: id,
                     },
@@ -88,16 +87,13 @@ async function insertNotion(data, history) {
                     // children: jira.getChildren()
                 });
             }
-
-            flag = true;
         }catch (e) {
             console.error(e);
             console.log(jira);
-            flag = false;
         }
     }
 
-    return flag;
+    return true;
 }
 
 export { insertNotion };

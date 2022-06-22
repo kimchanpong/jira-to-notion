@@ -10,7 +10,7 @@ async function getJiraHistory(data) {
 }
 
 function getJiraHistoryDto(history) {
-    const mergeList = history['issues'];
+    const mergeList = history;
     let jiraDtoArray = [];
     for(let issue of mergeList) {
         jiraDtoArray.push(new jiraDto(issue));

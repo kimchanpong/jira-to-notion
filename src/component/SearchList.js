@@ -1,6 +1,7 @@
 import React from 'react';
 import HistoryTable from "./HistoryTable";
 import Box from "@mui/material/Box";
+import HistoryLoading from "./HistoryLoading";
 
 function SearchList(props) {
     return (
@@ -10,7 +11,9 @@ function SearchList(props) {
         }}>
             {
                 props.loading ?
-                    'processing..'
+                    <HistoryLoading
+                        totalCount={props.totalCount}
+                    />
                     :
                     props.historyList.length > 0 ?
                         <HistoryTable historyList={props.historyList} />

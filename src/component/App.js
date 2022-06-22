@@ -11,19 +11,23 @@ import { insertNotion } from "../interface/notion/base";
 function App() {
     const [loading, setLoading] = useState(false);
     const [historyList, setHistoryList] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
     const { register, handleSubmit } = useForm();
 
     const onSubmit = async (data) => {
         setLoading(true);
 
         // get jira history
-        const history = await getJiraHistory(data);
+        let getList = await getJiraHistory(data);
+
+        // state set history data
+        setHistoryList(getList);
+        setTotalCount(getList.length);
 
         // jira search list -> notion insert
-        const success = await insertNotion(data, history);
+        const result = await insertNotion(data, getList);
 
-        if(success) {
-            setHistoryList(history)
+        if(result) {
             setLoading(false);
         }
     }
@@ -44,7 +48,7 @@ function App() {
             <CssBaseline />
 
             <Typography component="h1" variant="h5">
-                지라 -> 노션 등록
+                Jira -> Notion Data Interface
             </Typography>
 
             <SearchForm
@@ -53,6 +57,7 @@ function App() {
 
             <SearchList
                 loading={loading}
+                totalCount={totalCount}
                 historyList={historyList}
             />
         </Box>

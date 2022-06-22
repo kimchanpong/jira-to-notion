@@ -22,7 +22,7 @@ class jiraClient {
             this.header
         );
 
-        return getList;
+        return getList['issues'];
     }
 }
 

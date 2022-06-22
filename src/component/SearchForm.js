@@ -16,14 +16,14 @@ function SearchForm(props) {
                     id="startDate"
                     name="startDate"
                     label="기한 시작일시"
-                    helperText="월간보고 시작 기준일(ex: 2022-01-01)"
+                    helperText="지라 시작 기준일(ex: 2022-01-01)"
                     {...props.register('startDate')}
                 />
                 <TextField
                     id="endDate"
                     name="endDate"
                     label="기한 종료일시"
-                    helperText="월간보고 종료 기준일(ex: 2022-12-31)"
+                    helperText="지라 종료 기준일(ex: 2022-12-31)"
                     {...props.register('endDate')}
                 />
             </Box>
