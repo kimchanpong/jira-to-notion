@@ -33,13 +33,6 @@ function SearchForm(props) {
                 }}
             >
                 <TextField
-                    id="userName"
-                    name="userName"
-                    label="사용자명"
-                    helperText="노트북 로그인계정의 등록 소유자명(ex: 홍길동)"
-                    {...props.register('userName')}
-                />
-                <TextField
                     id="adAccount"
                     name="adAccount"
                     label="AD 계정"
@@ -58,7 +51,7 @@ function SearchForm(props) {
                     variant="contained"
                     sx={{ mt: 1, mb: 2 }}
                 >
-                    조회
+                    등록
                 </Button>
             </Box>
             <Divider

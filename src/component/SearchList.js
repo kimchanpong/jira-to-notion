@@ -10,12 +10,12 @@ function SearchList(props) {
         }}>
             {
                 props.loading ?
-                    'Loading..'
+                    'processing..'
                     :
                     props.historyList.length > 0 ?
                         <HistoryTable historyList={props.historyList} />
                         :
-                        '조회된 내역이 없습니다.'
+                        '등록된 내역이 없습니다.'
             }
         </Box>
     )

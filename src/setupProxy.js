@@ -1,4 +1,3 @@
-// import { createProxyMiddleware } from "http-proxy-middleware"; //이렇게 하면 안되고
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = function(app) {
@@ -6,6 +5,14 @@ module.exports = function(app) {
         '/rest/api/2/search',
         createProxyMiddleware({
             target: process.env.REACT_APP_JIRA_URL,
+            changeOrigin: true,
+        })
+    );
+
+    app.use(
+        '/v1/search',
+        createProxyMiddleware({
+            target: process.env.REACT_APP_NOTION_URL,
             changeOrigin: true,
         })
     );
