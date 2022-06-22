@@ -1,5 +1,5 @@
 class CommonUtil {
-    static get RestSearchUrl() {
+    static get RestJiraSearchUrl() {
         return '/rest/api/2/search';
     }
 
@@ -7,11 +7,20 @@ class CommonUtil {
         return '/v1/search';
     }
 
-    static get RestNotionDatabasesUrl() {
-        return '/v1/databases/JIRA/query';
+    static RestNotionDatabasesUrl(id) {
+        return `/v1/databases/${id}/query`;
     }
 
-    static SearchQuerystring(type, data) {
+    static RestNotionPagesUrl(id) {
+        let url = '/v1/pages';
+        if(id) {
+            url += id;
+        }
+
+        return url;
+    }
+
+    static JiraSearchQuerystring(type, data) {
         let querystring = '';
         if(type === 'NGCPO') {
             querystring = `project=NGCPO AND due >= ${data.startDate} AND due <= ${data.endDate} AND assignee in (${data.adAccount}) order by updated DESC`;

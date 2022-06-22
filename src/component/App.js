@@ -5,7 +5,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import SearchForm from "./SearchForm";
 import SearchList from "./SearchList";
 import { useForm } from "react-hook-form";
-import {getHistory, insertJiraToNotion} from "../interface/interface";
+import { getJiraHistory } from "../interface/jira/base";
+import { insertNotion } from "../interface/notion/base";
 
 function App() {
     const [loading, setLoading] = useState(false);
@@ -15,15 +16,16 @@ function App() {
     const onSubmit = async (data) => {
         setLoading(true);
 
-        // const getHistoryList = await getHistory(data);
+        // get jira history
+        const history = await getJiraHistory(data);
 
-        // setHistoryList(getHistoryList);
+        // jira search list -> notion insert
+        const success = await insertNotion(data, history);
 
-
-        //jira search list -> notion insert
-        await insertJiraToNotion(data);
-
-        setLoading(false);
+        if(success) {
+            setHistoryList(history)
+            setLoading(false);
+        }
     }
 
     return(
