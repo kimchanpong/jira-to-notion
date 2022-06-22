@@ -89,7 +89,6 @@ async function insertNotion(data, history) {
                 });
             }
 
-            console.log("response result :::: ", response);
             flag = true;
         }catch (e) {
             console.error(e);
