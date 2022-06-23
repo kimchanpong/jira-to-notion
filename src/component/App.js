@@ -1,20 +1,26 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 import SearchForm from "./SearchForm";
 import SearchList from "./SearchList";
 import { useForm } from "react-hook-form";
-import { getJiraHistory } from "../interface/jira/base";
-import { insertNotion } from "../interface/notion/base";
+import {getJiraHistory, getJiraHistoryDto} from "../interface/jira/base";
+import NotionBase from "../interface/notion/base";
 
 function App() {
     const [loading, setLoading] = useState(false);
     const [historyList, setHistoryList] = useState([]);
+    const [detect, setDetect] = useState(false);
+    const [successCount, setSuccessCount] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
     const { register, handleSubmit } = useForm();
 
     const onSubmit = async (data) => {
+        await interfaceProc(data);
+    }
+
+    async function interfaceProc(data) {
         setLoading(true);
 
         // get jira history
@@ -25,12 +31,41 @@ function App() {
         setTotalCount(getList.length);
 
         // jira search list -> notion insert
-        const result = await insertNotion(data, getList);
+        const notion = new NotionBase({
+            auth: process.env.REACT_APP_NOTION_TOKEN
+        });
 
-        if(result) {
+        const jiraDto = getJiraHistoryDto(getList);
+        const { id } = await notion.getDataBaseId('JIRA');
+        const dataList = await notion.getDataList(id);
+        let result = 0;
+
+        for(const jira of jiraDto) {
+            result = await notion.insertNotion({
+                id: id,
+                jira: jira,
+                dataList: dataList
+            });
+
+            setDetect(result > 0 ? true : false);
+        }
+
+        if(totalCount === successCount) {
             setLoading(false);
         }
     }
+
+    useEffect(() => {
+        if(detect) {
+            setSuccessCount(successCount + 1);
+            setDetect(false);
+        }
+
+        if(!loading) {
+            setSuccessCount(0);
+            setTotalCount(0);
+        }
+    });
 
     return(
         <Box
@@ -57,6 +92,7 @@ function App() {
 
             <SearchList
                 loading={loading}
+                successCount={successCount}
                 totalCount={totalCount}
                 historyList={historyList}
             />

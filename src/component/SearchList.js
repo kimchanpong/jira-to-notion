@@ -12,13 +12,14 @@ function SearchList(props) {
             {
                 props.loading ?
                     <HistoryLoading
+                        successCount={props.successCount}
                         totalCount={props.totalCount}
                     />
                     :
                     props.historyList.length > 0 ?
                         <HistoryTable historyList={props.historyList} />
                         :
-                        '등록된 내역이 없습니다.'
+                        '처리 내역이 없습니다.'
             }
         </Box>
     )

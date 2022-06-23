@@ -1,7 +1,7 @@
 function HistoryLoading(props) {
     return(
         <div>
-            processing..(total: {props.totalCount})
+            processing..({props.successCount}/{props.totalCount})
         </div>
     )
 }
