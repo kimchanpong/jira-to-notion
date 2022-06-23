@@ -1,7 +1,7 @@
 import CommonUtil from "../../util/common";
 import {callApi} from "../common/interface";
 
-class notionClient {
+class NotionClient {
     constructor(param) {
         this.url = process.env.REACT_APP_PROXY_URL + process.env.REACT_APP_NOTION_URL;
         this.header = {
@@ -79,4 +79,4 @@ class notionClient {
     }
 }
 
-export default notionClient;
+export default NotionClient;
