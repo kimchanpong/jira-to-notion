@@ -1,5 +1,5 @@
-import CommonUtil from "../../common/common";
-import { callApi } from "../interface";
+import CommonUtil from "../../util/common";
+import { callApi } from "../common/interface";
 
 class jiraClient {
     constructor(param) {
