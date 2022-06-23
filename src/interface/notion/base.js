@@ -1,99 +1,97 @@
-import notionClient from "./client";
+import NotionClient from "./client";
 import { getJiraHistoryDto } from "../jira/base";
 
-let notion;
+class NotionBase {
+    constructor(param) {
+        this.notion = new NotionClient({
+            auth: param.auth
+        });
+    }
 
-async function getDataBaseId(name) {
-    const resultList = await notion.search(
-        {
-            query: name,
-            sort: {
-                direction: 'ascending',
-                timestamp: 'last_edited_time',
+    getDataBaseId = async (name) => {
+        const resultList = await this.notion.search(
+            {
+                query: name,
+                sort: {
+                    direction: 'ascending',
+                    timestamp: 'last_edited_time',
+                },
+                filter: {
+                    value: 'database',
+                    property: 'object'
+                },
             },
-            filter: {
-                value: 'database',
-                property: 'object'
-            },
-        },
-    );
+        );
 
-    return resultList.results[0];
-}
-
-async function getDataList(id, cursor) {
-    let pageList = [];
-    const param = {
-        database_id: id,
-    };
-
-    if(cursor) {
-        param.start_cursor = cursor;
+        return resultList.results[0];
     }
 
-    let result = await notion.query({id: id});
+    getDataList = async (id, cursor) => {
+        let pageList = [];
+        const param = {
+            database_id: id,
+        };
 
-    const has_more = result.has_more;
-    const next_cursor = result.next_cursor;
-    const results = result.results;
+        if(cursor) {
+            param.start_cursor = cursor;
+        }
 
-    for(const page of results) {
-        pageList.push(page);
+        let result = await this.notion.query({id: id});
+
+        const has_more = result.has_more;
+        const next_cursor = result.next_cursor;
+        const results = result.results;
+
+        for(const page of results) {
+            pageList.push(page);
+        }
+
+        if(has_more) {
+            await this.getDataList(id, next_cursor);
+        }
+
+        return pageList;
     }
 
-    if(has_more) {
-        await getDataList(id, next_cursor);
-    }
-
-    return pageList;
-}
-
-async function insertNotion(data, history) {
-    notion = new notionClient({
-        auth: process.env.REACT_APP_NOTION_TOKEN
-    });
-
-    const jiraDto = getJiraHistoryDto(history);
-    const { id } = await getDataBaseId('JIRA');
-    const dataList = await getDataList(id);
-
-    for(const jira of jiraDto) {
+    insertNotion = async (param) => {
         try {
             let exists = false;
             let existPage = undefined;
 
             // 중복체크
-            for(const page of dataList) {
-                if(jira.equals(page)){
+            for(const page of param.dataList) {
+                if(param.jira.equals(page)){
                     existPage = page
                     exists = true;
                     break;
                 }
             }
 
-            console.log(`exists : ${exists}, jira: ${jira.key}`);
+            console.log(`exists : ${exists}, jira: ${param.jira.key}`);
             let response;
             if(exists) {
-                response = await notion.pageUpdate({
+                response = await this.notion.pageUpdate({
                     id: existPage.id,
-                    properties: jira.getNotionProperties()
+                    properties: param.jira.getNotionProperties()
                 });
             } else {
-                response = await notion.pageCreate({
+                response = await this.notion.pageCreate({
                     parent: {
-                        database_id: id,
+                        database_id: param.id,
                     },
-                    properties: jira.getNotionProperties(),
+                    properties: param.jira.getNotionProperties(),
                     // children: jira.getChildren()
                 });
             }
+
+            return 1;
         }catch (e) {
             console.error(e);
-            console.log(jira);
+            console.log(param.jira);
+
+            return 0;
         }
     }
-
-    return true;
 }
 
-export { insertNotion };
+export default NotionBase;
