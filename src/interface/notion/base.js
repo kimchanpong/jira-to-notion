@@ -80,16 +80,16 @@ class NotionBase {
                         database_id: param.id,
                     },
                     properties: param.jira.getNotionProperties(),
-                    // children: jira.getChildren()
+                    // children: param.jira.getChildren()
                 });
             }
 
-            return 1;
+            return true;
         }catch (e) {
             console.error(e);
             console.log(param.jira);
 
-            return 0;
+            return false;
         }
     }
 }

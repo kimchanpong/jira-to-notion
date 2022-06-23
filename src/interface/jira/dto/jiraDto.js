@@ -60,6 +60,19 @@ class jiraDto {
             };
         }
 
+        if(this.description) {
+            property['description'] = {
+                rich_text: [
+                    {
+                        type: 'text',
+                        text: {
+                            content: this.description
+                        }
+                    }
+                ]
+            };
+        }
+
         if(this.reporter) {
             property['reporter'] = {
                 select: {
@@ -120,27 +133,26 @@ class jiraDto {
     }
 
     getChildren() {
-
         if(this.description) {
             var textArry = [];
 
             function addText(string) {
-                // textArry.push({
-                //     object: 'block',
-                //     type: 'paragraph',
-                //     paragraph:{
-                //         rich_text: [
-                //             {
-                //                 type: 'text',
-                //                 text:{
-                //                     content: string
-                //                 }
-                //             }
-                //         ]
-                //     }
-                // })
+                textArry.push({
+                    object: 'block',
+                    type: 'paragraph',
+                    paragraph:{
+                        rich_text: [
+                            {
+                                type: 'text',
+                                text:{
+                                    content: string
+                                }
+                            }
+                        ]
+                    }
+                })
 
-                textArry.push(string);
+                // textArry.push(string);
             }
 
             function addMax1900(str) {
@@ -155,6 +167,8 @@ class jiraDto {
             this.description.split("\r\n").forEach((v, n) => {
                 addMax1900(v);
             });
+
+            console.log('textArry = ', textArry);
             return textArry;
         }
     }

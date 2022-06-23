@@ -38,7 +38,7 @@ function App() {
         const jiraDto = getJiraHistoryDto(getList);
         const { id } = await notion.getDataBaseId('JIRA');
         const dataList = await notion.getDataList(id);
-        let result = 0;
+        let result = false;
 
         for(const jira of jiraDto) {
             result = await notion.insertNotion({
@@ -47,7 +47,7 @@ function App() {
                 dataList: dataList
             });
 
-            setDetect(result > 0 ? true : false);
+            setDetect(result);
         }
 
         if(totalCount === successCount) {
@@ -56,11 +56,12 @@ function App() {
     }
 
     useEffect(() => {
-        if(detect) {
+        if(loading && detect) {
             setSuccessCount(successCount + 1);
             setDetect(false);
         }
 
+        // loading이 끝나면 count state 초기화
         if(!loading) {
             setSuccessCount(0);
             setTotalCount(0);
